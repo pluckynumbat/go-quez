@@ -1,2 +1,4 @@
 # go-quez
-Thie repo is for queue stuff in go
+Hi There!\
+\
+This repo is for queue stuff in go
