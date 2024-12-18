@@ -2,6 +2,8 @@ package quezlib
 
 import (
 	"testing"
+
+	"github.com/pluckynumbat/linked-list-stuff-go/tlistlib"
 )
 
 func TestIsNil(t *testing.T) {
@@ -28,8 +30,9 @@ func TestIsNil(t *testing.T) {
 }
 
 func TestIsListNil(t *testing.T) {
-	var q1, q2 *Queue
+	var q1, q2, q3 *Queue
 	q2 = &Queue{}
+	q3 = &Queue{&tlistlib.TailedList{}}
 
 	var tests = []struct {
 		name string
@@ -38,6 +41,7 @@ func TestIsListNil(t *testing.T) {
 	}{
 		{"nil queue", q1, true},
 		{"nil list", q2, true},
+		{"nil false", q3, false},
 	}
 
 	for _, test := range tests {
