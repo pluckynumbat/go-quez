@@ -15,3 +15,8 @@ func (q *Queue) IsNil() bool {
 func (q *Queue) isListNil() bool {
 	return q.IsNil() || q.list.IsNil()
 }
+
+// Method to check whether a Queue is empty
+func (q *Queue) IsEmpty() bool {
+	return q.IsNil() || q.list.IsNil() || q.list.Head() == nil
+}
