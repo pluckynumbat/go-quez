@@ -26,3 +26,26 @@ func TestIsNil(t *testing.T) {
 		})
 	}
 }
+
+func TestIsListNil(t *testing.T) {
+	var q1, q2 *Queue
+	q2 = &Queue{}
+
+	var tests = []struct {
+		name string
+		q    *Queue
+		want bool
+	}{
+		{"nil queue", q1, true},
+		{"nil list", q2, true},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got := test.q.isListNil()
+			if got != test.want {
+				t.Errorf("isListNil gave incorrect results, want: %v, got %v", test.want, got)
+			}
+		})
+	}
+}
