@@ -11,3 +11,7 @@ func (q *Queue) IsNil() bool {
 	return q == nil
 }
 
+// Internal method to check whether the underlying list is nil
+func (q *Queue) isListNil() bool {
+	return q.IsNil() || q.list.IsNil()
+}
