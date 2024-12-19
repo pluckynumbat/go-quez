@@ -79,5 +79,15 @@ func TestIsEmpty(t *testing.T) {
 	if want != got {
 		t.Errorf("IsEmpty gave incorrect results, want: %v, got %v", want, got)
 	}
+
+	tl := &tlistlib.TailedList{}
+	tl.AddAtEnd("a")
+	q = &Queue{tl}
+	want = false
+	got = q.IsEmpty()
+
+	if want != got {
+		t.Errorf("IsEmpty gave incorrect results, want: %v, got %v", want, got)
+	}
 }
 
