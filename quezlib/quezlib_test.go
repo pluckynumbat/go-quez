@@ -53,3 +53,33 @@ func TestIsListNil(t *testing.T) {
 		})
 	}
 }
+
+func TestIsEmpty(t *testing.T) {
+	var q1, q2, q3, q4 *Queue
+	q2 = &Queue{}
+	q3 = &Queue{&tlistlib.TailedList{}}
+
+	tl := &tlistlib.TailedList{}
+	tl.AddAtEnd("a")
+	q4 = &Queue{tl}
+
+	var tests = []struct {
+		name string
+		q    *Queue
+		want bool
+	}{
+		{"nil queue", q1, true},
+		{"non nil queue, nil list", q2, true},
+		{"non nil queue, empty list", q3, true},
+		{"non nil queue, non empty list", q4, false},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got := test.q.IsEmpty()
+			if got != test.want {
+				t.Errorf("isListNil gave incorrect results, want: %v, got %v", test.want, got)
+			}
+		})
+	}
+}
