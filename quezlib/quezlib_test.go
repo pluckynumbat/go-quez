@@ -53,3 +53,15 @@ func TestIsListNil(t *testing.T) {
 		})
 	}
 }
+
+func TestIsEmpty(t *testing.T) {
+	var q *Queue
+
+	want := true
+	got := q.IsEmpty()
+
+	if want != got {
+		t.Errorf("IsEmpty gave incorrect results, want: %v, got %v", want, got)
+	}
+}
+
