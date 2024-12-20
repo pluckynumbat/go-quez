@@ -27,3 +27,8 @@ func (q *Queue) isListNil() bool {
 func (q *Queue) IsEmpty() bool {
 	return q.IsNil() || q.tlist.IsNil() || q.tlist.Head() == nil
 }
+
+// Method to get the data at the beginning of the Queue
+func (q *Queue) Peek() (string, error) {
+	return q.tlist.Head().String(), nil
+}
