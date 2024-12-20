@@ -1,6 +1,13 @@
 package quezlib
 
-import "github.com/pluckynumbat/linked-list-stuff-go/tlistlib"
+import (
+	"fmt"
+
+	"github.com/pluckynumbat/linked-list-stuff-go/tlistlib"
+)
+
+var queueNilError = fmt.Errorf("The queue is nil")
+var queueEmptyError = fmt.Errorf("The queue is empty")
 
 type Queue struct {
 	list *tlistlib.TailedList
