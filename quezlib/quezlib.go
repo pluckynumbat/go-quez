@@ -20,10 +20,10 @@ func (q *Queue) IsNil() bool {
 
 // Internal method to check whether the underlying list is nil
 func (q *Queue) isListNil() bool {
-	return q.IsNil() || q.list.IsNil()
+	return q.IsNil() || q.tlist.IsNil()
 }
 
 // Method to check whether a Queue is empty
 func (q *Queue) IsEmpty() bool {
-	return q.IsNil() || q.list.IsNil() || q.list.Head() == nil
+	return q.IsNil() || q.tlist.IsNil() || q.tlist.Head() == nil
 }
