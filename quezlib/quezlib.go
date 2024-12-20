@@ -30,5 +30,13 @@ func (q *Queue) IsEmpty() bool {
 
 // Method to get the data at the beginning of the Queue
 func (q *Queue) Peek() (string, error) {
+	if q.IsNil() {
+		return "", queueNilError
+	}
+
+	if q.IsEmpty() {
+		return "", queueEmptyError
+	}
+
 	return q.tlist.Head().String(), nil
 }
