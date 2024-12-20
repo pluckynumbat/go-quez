@@ -10,7 +10,7 @@ var queueNilError = fmt.Errorf("The queue is nil")
 var queueEmptyError = fmt.Errorf("The queue is empty")
 
 type Queue struct {
-	list *tlistlib.TailedList
+	tlist *tlistlib.TailedList
 }
 
 // Method to check whether a pointer to a Queue is nil
