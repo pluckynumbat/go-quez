@@ -1,7 +1,6 @@
 package quezlib
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/pluckynumbat/linked-list-stuff-go/tlistlib"
@@ -102,28 +101,26 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 }
 
 func TestPeekNilOrEmptyQueue(t *testing.T) {
-	var q *Queue
-	_, err := q.Peek()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		t.Errorf("Peek() on a nil queue should return an error")
+	var q1, q2, q3 *Queue
+	q2 = &Queue{}
+	q3 = &Queue{&tlistlib.TailedList{}}
+
+	var tests = []struct {
+		name string
+		q    *Queue
+		want error
+	}{
+		{"nil queue", q1, queueNilError},
+		{"non nil queue, nil list", q2, queueEmptyError},
+		{"non nil queue, empty list", q3, queueEmptyError},
 	}
 
-	q = &Queue{}
-	_, err = q.Peek()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		t.Errorf("Peek() on a an empty queue should return an error")
-	}
-
-	tl := &tlistlib.TailedList{}
-	q = &Queue{tl}
-	_, err = q.Peek()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		t.Errorf("Peek() on a an empty queue should return an error")
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, got := test.q.Peek()
+			if got != test.want {
+				t.Errorf("Peek gave incorrect error, want: %v, got %v", test.want, got)
+			}
+		})
 	}
 }
