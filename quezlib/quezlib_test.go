@@ -130,3 +130,40 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 	}
 }
 
+func TestPeek(t *testing.T) {
+	var q *Queue
+	_, err := q.Peek()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		t.Errorf("Peek() on a nil queue should return an error")
+	}
+
+	q = &Queue{}
+	_, err = q.Peek()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		t.Errorf("Peek() on a an empty queue should return an error")
+	}
+
+	tl := &tlistlib.TailedList{}
+	q = &Queue{tl}
+	_, err = q.Peek()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		t.Errorf("Peek() on a an empty queue should return an error")
+	}
+
+	tl.AddAtEnd("a")
+
+	want := "a"
+	got, err := q.Peek()
+	if err != nil {
+		t.Errorf("Peek on the Queue failed with error: %v", err)
+	}
+	if want != got {
+		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
+	}
+}
