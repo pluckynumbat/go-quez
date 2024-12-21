@@ -1,6 +1,7 @@
 package quezlib
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/pluckynumbat/linked-list-stuff-go/tlistlib"
@@ -81,5 +82,15 @@ func TestIsEmpty(t *testing.T) {
 				t.Errorf("isListNil gave incorrect results, want: %v, got %v", test.want, got)
 			}
 		})
+	}
+}
+
+func TestPeekNilQueue(t *testing.T) {
+	var q *Queue
+	_, err := q.Peek()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		t.Errorf("Peek() on a nil queue should return an error")
 	}
 }
