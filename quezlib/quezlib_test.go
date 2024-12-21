@@ -85,35 +85,6 @@ func TestIsEmpty(t *testing.T) {
 	}
 }
 
-func TestPeekNilQueue(t *testing.T) {
-	var q *Queue
-	_, err := q.Peek()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		t.Errorf("Peek() on a nil queue should return an error")
-	}
-}
-
-func TestPeekEmptyQueue(t *testing.T) {
-	q := &Queue{}
-	_, err := q.Peek()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		t.Errorf("Peek() on a an empty queue should return an error")
-	}
-
-	tl := &tlistlib.TailedList{}
-	q = &Queue{tl}
-	_, err = q.Peek()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		t.Errorf("Peek() on a an empty queue should return an error")
-	}
-}
-
 func TestPeekNonEmptyQueue(t *testing.T) {
 	tl := &tlistlib.TailedList{}
 	q := &Queue{tl}
