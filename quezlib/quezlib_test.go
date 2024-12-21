@@ -83,3 +83,44 @@ func TestIsEmpty(t *testing.T) {
 		})
 	}
 }
+
+func TestPeekNonEmptyQueue(t *testing.T) {
+	tl := &tlistlib.TailedList{}
+	q := &Queue{tl}
+
+	tl.AddAtEnd("a")
+
+	want := "a"
+	got, err := q.Peek()
+	if err != nil {
+		t.Errorf("Peek on the Queue failed with error: %v", err)
+	}
+	if want != got {
+		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
+	}
+}
+
+func TestPeekNilOrEmptyQueue(t *testing.T) {
+	var q1, q2, q3 *Queue
+	q2 = &Queue{}
+	q3 = &Queue{&tlistlib.TailedList{}}
+
+	var tests = []struct {
+		name string
+		q    *Queue
+		want error
+	}{
+		{"nil queue", q1, queueNilError},
+		{"non nil queue, nil list", q2, queueEmptyError},
+		{"non nil queue, empty list", q3, queueEmptyError},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, got := test.q.Peek()
+			if got != test.want {
+				t.Errorf("Peek gave incorrect error, want: %v, got %v", test.want, got)
+			}
+		})
+	}
+}
