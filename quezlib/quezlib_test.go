@@ -103,5 +103,14 @@ func TestPeekEmptyQueue(t *testing.T) {
 	} else {
 		t.Errorf("Peek() on a an empty queue should return an error")
 	}
+
+	tl := &tlistlib.TailedList{}
+	q = &Queue{tl}
+	_, err = q.Peek()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		t.Errorf("Peek() on a an empty queue should return an error")
+	}
 }
 
