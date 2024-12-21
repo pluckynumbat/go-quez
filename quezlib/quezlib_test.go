@@ -130,7 +130,7 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 	}
 }
 
-func TestPeek(t *testing.T) {
+func TestPeekNilOrEmptyQueue(t *testing.T) {
 	var q *Queue
 	_, err := q.Peek()
 	if err != nil {
@@ -154,16 +154,5 @@ func TestPeek(t *testing.T) {
 		fmt.Println(err)
 	} else {
 		t.Errorf("Peek() on a an empty queue should return an error")
-	}
-
-	tl.AddAtEnd("a")
-
-	want := "a"
-	got, err := q.Peek()
-	if err != nil {
-		t.Errorf("Peek on the Queue failed with error: %v", err)
-	}
-	if want != got {
-		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
 	}
 }
