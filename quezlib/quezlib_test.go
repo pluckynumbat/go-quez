@@ -101,8 +101,6 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
 	}
 
-	tl.AddAtEnd("b")
-
 	_, err = tl.RemoveFirst()
 	if err != nil {
 		t.Errorf("RemoveFirst on list failed with error: %v", err)
