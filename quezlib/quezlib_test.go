@@ -93,49 +93,33 @@ func TestPeekQueueTillEmpty(t *testing.T) {
 	tl.AddAtEnd("b")
 	tl.AddAtEnd("c")
 
-	want := "a"
-	got, err := q.Peek()
-	if err != nil {
-		t.Errorf("Peek on the Queue failed with error: %v", err)
-	}
-	if want != got {
-		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
-	}
-
-	_, err = tl.RemoveFirst()
-	if err != nil {
-		t.Errorf("RemoveFirst on list failed with error: %v", err)
+	var tests = []struct {
+		name string
+		want string
+	}{
+		{"3 elements queue", "a"},
+		{"2 elements queue", "b"},
+		{"1 element queue", "c"},
 	}
 
-	want = "b"
-	got, err = q.Peek()
-	if err != nil {
-		t.Errorf("Peek on the Queue failed with error: %v", err)
-	}
-	if want != got {
-		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := q.Peek()
+			if err != nil {
+				t.Errorf("Peek on the Queue failed with error: %v", err)
+			}
+			if got != test.want {
+				t.Errorf("Peek gave incorrect results, want: %v, got %v", test.want, got)
+			}
+
+			_, err = tl.RemoveFirst()
+			if err != nil {
+				t.Errorf("RemoveFirst on list failed with error: %v", err)
+			}
+		})
 	}
 
-	_, err = tl.RemoveFirst()
-	if err != nil {
-		t.Errorf("RemoveFirst on list failed with error: %v", err)
-	}
-
-	want = "c"
-	got, err = q.Peek()
-	if err != nil {
-		t.Errorf("Peek on the Queue failed with error: %v", err)
-	}
-	if want != got {
-		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
-	}
-
-	_, err = tl.RemoveFirst()
-	if err != nil {
-		t.Errorf("RemoveFirst on list failed with error: %v", err)
-	}
-
-	_, err = q.Peek()
+	_, err := q.Peek()
 	if err != nil {
 		fmt.Println(err)
 	} else {
