@@ -89,6 +89,8 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 	q := &Queue{tl}
 
 	tl.AddAtEnd("a")
+	tl.AddAtEnd("b")
+	tl.AddAtEnd("c")
 
 	want := "a"
 	got, err := q.Peek()
@@ -100,9 +102,27 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 	}
 
 	tl.AddAtEnd("b")
-	tl.RemoveFirst()
+
+	_, err = tl.RemoveFirst()
+	if err != nil {
+		t.Errorf("RemoveFirst on list failed with error: %v", err)
+	}
 
 	want = "b"
+	got, err = q.Peek()
+	if err != nil {
+		t.Errorf("Peek on the Queue failed with error: %v", err)
+	}
+	if want != got {
+		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
+	}
+
+	_, err = tl.RemoveFirst()
+	if err != nil {
+		t.Errorf("RemoveFirst on list failed with error: %v", err)
+	}
+
+	want = "c"
 	got, err = q.Peek()
 	if err != nil {
 		t.Errorf("Peek on the Queue failed with error: %v", err)
