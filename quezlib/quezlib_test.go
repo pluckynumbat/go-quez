@@ -98,6 +98,18 @@ func TestPeekNonEmptyQueue(t *testing.T) {
 	if want != got {
 		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
 	}
+
+	tl.AddAtEnd("b")
+	tl.RemoveFirst()
+
+	want = "b"
+	got, err = q.Peek()
+	if err != nil {
+		t.Errorf("Peek on the Queue failed with error: %v", err)
+	}
+	if want != got {
+		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
+	}
 }
 
 func TestPeekNilOrEmptyQueue(t *testing.T) {
