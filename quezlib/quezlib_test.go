@@ -1,6 +1,7 @@
 package quezlib
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/pluckynumbat/linked-list-stuff-go/tlistlib"
@@ -84,19 +85,45 @@ func TestIsEmpty(t *testing.T) {
 	}
 }
 
-func TestPeekNonEmptyQueue(t *testing.T) {
+func TestPeekQueueTillEmpty(t *testing.T) {
 	tl := &tlistlib.TailedList{}
 	q := &Queue{tl}
 
 	tl.AddAtEnd("a")
+	tl.AddAtEnd("b")
+	tl.AddAtEnd("c")
 
-	want := "a"
-	got, err := q.Peek()
-	if err != nil {
-		t.Errorf("Peek on the Queue failed with error: %v", err)
+	var tests = []struct {
+		name string
+		want string
+	}{
+		{"3 elements queue", "a"},
+		{"2 elements queue", "b"},
+		{"1 element queue", "c"},
 	}
-	if want != got {
-		t.Errorf("Peek gave incorrect results, want: %v, got %v", want, got)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := q.Peek()
+			if err != nil {
+				t.Errorf("Peek on the Queue failed with error: %v", err)
+			}
+			if got != test.want {
+				t.Errorf("Peek gave incorrect results, want: %v, got %v", test.want, got)
+			}
+
+			_, err = tl.RemoveFirst()
+			if err != nil {
+				t.Errorf("RemoveFirst on list failed with error: %v", err)
+			}
+		})
+	}
+
+	_, err := q.Peek()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		t.Errorf("calling Peek() on an empty Queue should return an error: %v", err)
 	}
 }
 
