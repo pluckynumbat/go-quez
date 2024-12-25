@@ -215,3 +215,43 @@ func TestCreateNewQueue(t *testing.T) {
 	}
 
 }
+
+func TestCreateNewQueueTableDriven(t *testing.T) {
+	var q1, q2, q3 *Queue
+	q2 = &Queue{}
+	q3 = CreateNewQueue()
+
+	var tests = []struct {
+		name          string
+		q             *Queue
+		wantIsNil     bool
+		wantIsListNil bool
+		wantIsEmpty   bool
+	}{
+		{"nil pointer", q1, true, true, true},
+		{"nil list", q2, false, true, true},
+		{"create new queue", q3, false, false, true},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			want := test.wantIsNil
+			got := test.q.IsNil()
+			if got != want {
+				t.Errorf("IsNil() gave incorrect results, want: %v, got %v", want, got)
+			}
+
+			want = test.wantIsListNil
+			got = test.q.isListNil()
+			if got != want {
+				t.Errorf("isListNil() gave incorrect results, want: %v, got %v", want, got)
+			}
+
+			want = test.wantIsEmpty
+			got = test.q.IsEmpty()
+			if got != want {
+				t.Errorf("IsEmpty() gave incorrect results, want: %v, got %v", want, got)
+			}
+		})
+	}
+}
