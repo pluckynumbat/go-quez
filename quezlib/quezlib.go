@@ -13,6 +13,13 @@ type Queue struct {
 	tlist *tlistlib.TailedList
 }
 
+// Function to create a new Queue with a new underlying list
+func CreateNewQueue() *Queue {
+	tl := &tlistlib.TailedList{}
+	q := &Queue{tl}
+	return q
+}
+
 // Method to check whether a pointer to a Queue is nil
 func (q *Queue) IsNil() bool {
 	return q == nil
