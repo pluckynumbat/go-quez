@@ -47,3 +47,17 @@ func (q *Queue) Peek() (string, error) {
 
 	return q.tlist.Head().String(), nil
 }
+
+// Method to add an element at the end of the Queue
+func (q *Queue) Enqueue(val string) error {
+	if q.IsNil() {
+		return queueNilError
+	}
+
+	if q.isListNil() {
+		q.tlist = &tlistlib.TailedList{}
+	}
+
+	q.tlist.AddAtEnd(val)
+	return nil
+}
