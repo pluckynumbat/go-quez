@@ -54,6 +54,10 @@ func (q *Queue) Enqueue(val string) error {
 		return queueNilError
 	}
 
+	if q.isListNil() {
+		q.tlist = &tlistlib.TailedList{}
+	}
+
 	q.tlist.AddAtEnd(val)
 	return nil
 }
