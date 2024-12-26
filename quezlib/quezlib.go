@@ -50,6 +50,10 @@ func (q *Queue) Peek() (string, error) {
 
 // Method to add an element at the end of the Queue
 func (q *Queue) Enqueue(val string) error {
+	if q.IsNil() {
+		return queueNilError
+	}
+
 	q.tlist.AddAtEnd(val)
 	return nil
 }
