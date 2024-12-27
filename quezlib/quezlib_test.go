@@ -151,3 +151,31 @@ func TestPeekNilOrEmptyQueue(t *testing.T) {
 		})
 	}
 }
+
+func TestEnqueueNilQueue(t *testing.T) {
+	var q *Queue
+	err := q.Enqueue("a")
+	if err == nil {
+		t.Errorf("Enqueue() on a nil queue should have returned an error")
+	} else {
+		fmt.Println(err)
+	}
+}
+
+func TestEnqueueEmptyQueue(t *testing.T) {
+	q := &Queue{}
+	err := q.Enqueue("a")
+	if err != nil {
+		t.Errorf("Enqueue() failed with error: %v", err)
+	} else {
+		want := "a"
+		got, err2 := q.Peek()
+		if err2 != nil {
+			t.Errorf("Peek() failed with error: %v", err2)
+		} else {
+			if got != want {
+				t.Errorf("Enqueue() gave incorrect results, want: %v, got: %v", want, got)
+			}
+		}
+	}
+}
