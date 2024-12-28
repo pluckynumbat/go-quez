@@ -196,4 +196,33 @@ func TestPeekAfterEnqueue(t *testing.T) {
 			}
 		}
 	}
+
+	err = q.Enqueue("b")
+	if err != nil {
+		t.Errorf("Enqueue() failed with error: %v", err)
+	} else {
+		want := "a"
+		got, err2 := q.Peek()
+		if err2 != nil {
+			t.Errorf("Peek() failed with error: %v", err2)
+		} else {
+			if got != want {
+				t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+			}
+		}
+	}
+	err = q.Enqueue("c")
+	if err != nil {
+		t.Errorf("Enqueue() failed with error: %v", err)
+	} else {
+		want := "a"
+		got, err2 := q.Peek()
+		if err2 != nil {
+			t.Errorf("Peek() failed with error: %v", err2)
+		} else {
+			if got != want {
+				t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+			}
+		}
+	}
 }
