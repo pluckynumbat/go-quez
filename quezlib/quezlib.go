@@ -61,6 +61,10 @@ func (q *Queue) Dequeue() (string, error) {
 		return "", queueNilError
 	}
 
+	if q.IsEmpty() {
+		return "", queueEmptyError
+	}
+
 	node, err := q.tlist.RemoveFirst()
 	if err != nil {
 		return "", fmt.Errorf("Dequeue() encountered an error: %v\n", err)
