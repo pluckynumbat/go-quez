@@ -54,3 +54,9 @@ func (q *Queue) Enqueue(val string) error {
 	q.tlist.AddAtEnd(val)
 	return nil
 }
+
+// Method to remove and return the element at the beginning of the Queue
+func (q *Queue) Dequeue() string {
+	node, _ := q.tlist.RemoveFirst()
+	return node.String()
+}
