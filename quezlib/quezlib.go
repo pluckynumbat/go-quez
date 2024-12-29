@@ -57,6 +57,10 @@ func (q *Queue) Enqueue(val string) error {
 
 // Method to remove and return the element at the beginning of the Queue
 func (q *Queue) Dequeue() (string, error) {
+	if q.IsNil() {
+		return "", queueNilError
+	}
+
 	node, err := q.tlist.RemoveFirst()
 	if err != nil {
 		return "", fmt.Errorf("Dequeue() encountered an error: %v\n", err)
