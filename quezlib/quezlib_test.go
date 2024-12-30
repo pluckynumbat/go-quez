@@ -216,3 +216,27 @@ func TestDequeueEmptyQueue(t *testing.T) {
 	}
 }
 
+func TestDequeue(t *testing.T) {
+	tl := &tlistlib.TailedList{}
+	tl.AddAtEnd("a")
+
+	q := &Queue{tl}
+
+	val, err := q.Dequeue()
+	if err != nil {
+		t.Errorf("Dequeue() failed with error: %v", err)
+	} else {
+		want := "a"
+		got := val
+		if want != got {
+			t.Errorf("Dequeue() gave incorrect results, want: %v, got: %v", want, got)
+		}
+
+		_, err2 := q.Peek()
+		if err2 == nil {
+			t.Error("Peek() on an empty Queue should have returned an error")
+		} else {
+			fmt.Println(err2)
+		}
+	}
+}
