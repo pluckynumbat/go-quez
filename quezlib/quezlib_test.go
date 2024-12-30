@@ -193,3 +193,71 @@ func TestPeekAfterEnqueue(t *testing.T) {
 		})
 	}
 }
+
+func TestDequeueNilQueue(t *testing.T) {
+	var q *Queue
+
+	_, err := q.Dequeue()
+	if err == nil {
+		t.Error("Dequeue() on a nil Queue should have returned an error")
+	} else {
+		fmt.Println(err)
+	}
+}
+
+func TestDequeueEmptyQueue(t *testing.T) {
+	q := &Queue{}
+
+	_, err := q.Dequeue()
+	if err == nil {
+		t.Error("Dequeue() on an empty Queue should have returned an error")
+	} else {
+		fmt.Println(err)
+	}
+}
+
+func TestDequeueTillEmpty(t *testing.T) {
+	tl := &tlistlib.TailedList{}
+	tl.AddAtEnd("a")
+	tl.AddAtEnd("b")
+	tl.AddAtEnd("c")
+
+	q := &Queue{tl}
+
+	var tests = []struct {
+		name       string
+		dequeueVal string
+		newPeek    string
+		expPeekErr error
+	}{
+		{"3 elements", "a", "b", nil},
+		{"2 elements", "b", "c", nil},
+		{"1 element", "c", "", queueEmptyError},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			val, err := q.Dequeue()
+			if err != nil {
+				t.Errorf("Dequeue() failed with error: %v", err)
+			} else {
+				want := test.dequeueVal
+				got := val
+				if want != got {
+					t.Errorf("Dequeue() gave incorrect results, want: %v, got: %v", want, got)
+				}
+			}
+
+			val2, err2 := q.Peek()
+			if err2 != test.expPeekErr {
+				t.Errorf("Peek() error doesn't match expected error, want: %v, got: %v", test.expPeekErr, err2)
+			} else {
+				want := test.newPeek
+				got := val2
+				if want != got {
+					t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+				}
+			}
+		})
+	}
+}
