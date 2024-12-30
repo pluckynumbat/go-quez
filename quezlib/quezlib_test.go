@@ -205,3 +205,14 @@ func TestDequeueNilQueue(t *testing.T) {
 	}
 }
 
+func TestDequeueEmptyQueue(t *testing.T) {
+	q := &Queue{}
+
+	_, err := q.Dequeue()
+	if err == nil {
+		t.Error("Dequeue() on an empty Queue should have returned an error")
+	} else {
+		fmt.Println(err)
+	}
+}
+
