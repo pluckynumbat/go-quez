@@ -216,9 +216,11 @@ func TestDequeueEmptyQueue(t *testing.T) {
 	}
 }
 
-func TestDequeue(t *testing.T) {
+func TestDequeueTillEmpty(t *testing.T) {
 	tl := &tlistlib.TailedList{}
 	tl.AddAtEnd("a")
+	tl.AddAtEnd("b")
+	tl.AddAtEnd("c")
 
 	q := &Queue{tl}
 
@@ -232,6 +234,44 @@ func TestDequeue(t *testing.T) {
 			t.Errorf("Dequeue() gave incorrect results, want: %v, got: %v", want, got)
 		}
 
+		val2, err2 := q.Peek()
+		if err2 != nil {
+			t.Errorf("Peek() failed with error: %v", err)
+		} else {
+			want = "b"
+			got = val2
+			if want != got {
+				t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+			}
+		}
+	}
+
+	val, err = q.Dequeue()
+	if err != nil {
+		t.Errorf("Dequeue() failed with error: %v", err)
+	} else {
+		want := "b"
+		got := val
+		if want != got {
+			t.Errorf("Dequeue() gave incorrect results, want: %v, got: %v", want, got)
+		}
+
+		val2, err2 := q.Peek()
+		if err2 != nil {
+			t.Errorf("Peek() failed with error: %v", err)
+		} else {
+			want = "c"
+			got = val2
+			if want != got {
+				t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+			}
+		}
+	}
+
+	val, err = q.Dequeue()
+	if err != nil {
+		t.Errorf("Dequeue() failed with error: %v", err)
+	} else {
 		_, err2 := q.Peek()
 		if err2 == nil {
 			t.Error("Peek() on an empty Queue should have returned an error")
