@@ -193,3 +193,15 @@ func TestPeekAfterEnqueue(t *testing.T) {
 		})
 	}
 }
+
+func TestDequeueNilQueue(t *testing.T) {
+	var q *Queue
+
+	_, err := q.Dequeue()
+	if err == nil {
+		t.Error("Dequeue() on a nil Queue should have returned an error")
+	} else {
+		fmt.Println(err)
+	}
+}
+
