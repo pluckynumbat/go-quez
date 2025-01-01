@@ -123,7 +123,7 @@ func TestPeekQueueTillEmpty(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		t.Errorf("calling Peek() on an empty Queue should return an error: %v", err)
+		t.Error("calling Peek() on an empty Queue should return an error")
 	}
 }
 
@@ -156,7 +156,7 @@ func TestEnqueueNilQueue(t *testing.T) {
 	var q *Queue
 	err := q.Enqueue("a")
 	if err == nil {
-		t.Errorf("Enqueue() on a nil queue should have returned an error")
+		t.Error("Enqueue() on a nil queue should have returned an error")
 	} else {
 		fmt.Println(err)
 	}
@@ -257,6 +257,95 @@ func TestDequeueTillEmpty(t *testing.T) {
 				if want != got {
 					t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
 				}
+			}
+		})
+	}
+}
+
+func TestQueueOperations(t *testing.T) {
+	q := &Queue{}
+
+	var enqueueTests = []struct {
+		name string
+		val  string
+	}{
+		{"1 element queue", "a"},
+		{"2 element queue", "b"},
+		{"3 element queue", "c"},
+	}
+
+	for _, test := range enqueueTests {
+		t.Run(test.name, func(t *testing.T) {
+			err := q.Enqueue(test.val)
+			if err != nil {
+				t.Errorf("Enqueue() failed with error: %v", err)
+			} else {
+				want := "a"
+				got, err2 := q.Peek()
+				if err2 != nil {
+					t.Errorf("Peek() failed with error: %v", err2)
+				} else {
+					if got != want {
+						t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+					}
+				}
+			}
+		})
+	}
+
+	var dequeueTests = []struct {
+		name       string
+		dequeueVal string
+		newPeek    string
+		expPeekErr error
+	}{
+		{"3 elements", "a", "b", nil},
+		{"2 elements", "b", "c", nil},
+		{"1 element", "c", "", queueEmptyError},
+	}
+
+	for _, test := range dequeueTests {
+		t.Run(test.name, func(t *testing.T) {
+			val, err := q.Dequeue()
+			if err != nil {
+				t.Errorf("Dequeue() failed with error: %v", err)
+			} else {
+				want := test.dequeueVal
+				got := val
+				if want != got {
+					t.Errorf("Dequeue() gave incorrect results, want: %v, got: %v", want, got)
+				}
+			}
+
+			val2, err2 := q.Peek()
+			if err2 != test.expPeekErr {
+				t.Errorf("Peek() error doesn't match expected error, want: %v, got: %v", test.expPeekErr, err2)
+			} else {
+				want := test.newPeek
+				got := val2
+				if want != got {
+					t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+				}
+			}
+		})
+	}
+
+	var stateTests = []struct {
+		name   string
+		fn     func() bool
+		fnName string
+		want   bool
+	}{
+		{"is nil", q.IsNil, "IsNil", false},
+		{"is list nil", q.isListNil, "isListNil", false},
+		{"is empty", q.IsEmpty, "isEmpty", true},
+	}
+
+	for _, test := range stateTests {
+		t.Run(test.name, func(t *testing.T) {
+			got := test.fn()
+			if got != test.want {
+				t.Errorf("Got incorrect results for the state function %v, want: %v, got: %v", test.fnName, test.want, got)
 			}
 		})
 	}
