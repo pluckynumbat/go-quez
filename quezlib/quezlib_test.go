@@ -123,7 +123,7 @@ func TestPeekQueueTillEmpty(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		t.Errorf("calling Peek() on an empty Queue should return an error: %v", err)
+		t.Error("calling Peek() on an empty Queue should return an error")
 	}
 }
 
@@ -156,7 +156,7 @@ func TestEnqueueNilQueue(t *testing.T) {
 	var q *Queue
 	err := q.Enqueue("a")
 	if err == nil {
-		t.Errorf("Enqueue() on a nil queue should have returned an error")
+		t.Error("Enqueue() on a nil queue should have returned an error")
 	} else {
 		fmt.Println(err)
 	}
