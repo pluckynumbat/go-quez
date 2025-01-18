@@ -156,3 +156,41 @@ func TestPeek1(t *testing.T) {
 	}
 }
 
+func TestPeekQueueTillEmpty(t *testing.T) {
+	l := &sdlistlib.SemiGenericList[prString]{}
+	prStrs := []prString{"a", "b", "c"}
+
+	for _, prStr := range prStrs {
+		addErr := l.AddAtEnd(prStr)
+		if addErr != nil {
+			t.Fatalf("list add failed with error: %v", addErr)
+		}
+	}
+
+	q := &SemiGenericQueue[prString]{l}
+
+	var tests = []struct {
+		name    string
+		wantVal prString
+	}{
+		{"3 element queue", "a"},
+		{"2 element queue", "b"},
+		{"1 element queue", "c"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			gotVal, err := q.Peek()
+			if err != nil {
+				t.Fatalf("Peek() failed with error: %v", err)
+			} else if gotVal != test.wantVal {
+				t.Errorf("Incorrect result for Peek(), want: %v, got : %v", test.wantVal, gotVal)
+			}
+
+			_, remErr := l.RemoveFirst()
+			if remErr != nil {
+				t.Fatalf("list's RemoveFirst() failed with error: %v", remErr)
+			}
+		})
+	}
+}
