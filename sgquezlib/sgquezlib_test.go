@@ -1,7 +1,9 @@
 package sgquezlib
 
 import (
+	"errors"
 	"fmt"
+
 	"github.com/pluckynumbat/linked-list-stuff-go/sdlistlib"
 
 	"testing"
@@ -109,6 +111,85 @@ func TestIsEmpty(t *testing.T) {
 
 			if got != want {
 				t.Errorf("IsEmpty() gave incorrect results, want: %v, got : %v", want, got)
+			}
+		})
+	}
+}
+
+func TestPeek(t *testing.T) {
+	var q1, q2, q3, q4 *SemiGenericQueue[*prInt]
+
+	q2 = &SemiGenericQueue[*prInt]{}
+
+	l1 := &sdlistlib.SemiGenericList[*prInt]{}
+	q3 = &SemiGenericQueue[*prInt]{l1}
+
+	l2 := &sdlistlib.SemiGenericList[*prInt]{}
+	var pr1 prInt
+	addErr := l2.AddAtBeginning(&pr1)
+	if addErr != nil {
+		t.Fatalf("list add failed with error: %v", addErr)
+	}
+	q4 = &SemiGenericQueue[*prInt]{l2}
+
+	var tests1 = []struct {
+		name     string
+		queue    *SemiGenericQueue[*prInt]
+		wantVal  *prInt
+		expError error
+	}{
+		{"nil queue", q1, nil, queueNilError},
+		{"non-nil queue, nil list", q2, nil, queueEmptyError},
+		{"empty queue", q3, nil, queueEmptyError},
+		{"non-empty queue", q4, &pr1, nil},
+	}
+
+	for _, test := range tests1 {
+		t.Run(test.name, func(t *testing.T) {
+			gotVal, gotErr := test.queue.Peek()
+			if !errors.Is(gotErr, test.expError) {
+				t.Errorf("Unexpected error for Peek(), want: %v, got : %v", test.expError, gotErr)
+			} else if gotErr != nil {
+				fmt.Println(gotErr)
+			} else if gotVal != test.wantVal {
+				t.Errorf("Incorrect result for Peek(), want: %v, got : %v", test.wantVal, gotVal)
+			}
+		})
+	}
+
+	l := &sdlistlib.SemiGenericList[prString]{}
+	prStrs := []prString{"a", "b", "c"}
+
+	for _, prStr := range prStrs {
+		addErr := l.AddAtEnd(prStr)
+		if addErr != nil {
+			t.Fatalf("list add failed with error: %v", addErr)
+		}
+	}
+
+	q := &SemiGenericQueue[prString]{l}
+
+	var tests2 = []struct {
+		name    string
+		wantVal prString
+	}{
+		{"3 element queue", "a"},
+		{"2 element queue", "b"},
+		{"1 element queue", "c"},
+	}
+
+	for _, test := range tests2 {
+		t.Run(test.name, func(t *testing.T) {
+			gotVal, err := q.Peek()
+			if err != nil {
+				t.Fatalf("Peek() failed with error: %v", err)
+			} else if gotVal != test.wantVal {
+				t.Errorf("Incorrect result for Peek(), want: %v, got : %v", test.wantVal, gotVal)
+			}
+
+			_, remErr := l.RemoveFirst()
+			if remErr != nil {
+				t.Fatalf("list's RemoveFirst() failed with error: %v", remErr)
 			}
 		})
 	}
