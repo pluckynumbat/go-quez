@@ -28,3 +28,22 @@ func (queue *SemiGenericQueue[T]) isListNil() bool {
 func (queue *SemiGenericQueue[T]) IsEmpty() bool {
 	return queue.IsNil() || queue.isListNil() || queue.sdlist.IsEmpty()
 }
+
+// Peek returns the data (if present) at the front of the queue
+func (queue *SemiGenericQueue[T]) Peek() (T, error) {
+	if queue.IsNil() {
+		return *new(T), queueNilError
+	}
+
+	if queue.IsEmpty() {
+		return *new(T), queueEmptyError
+	}
+
+	data, err := queue.sdlist.Head().GetData()
+	if err != nil {
+		return *new(T), fmt.Errorf("queue Peek() failed with error %v", err)
+	}
+
+	return data, nil
+}
+
