@@ -7,6 +7,9 @@ import (
 	"github.com/pluckynumbat/linked-list-stuff-go/sdlistlib"
 )
 
+var queueNilError = fmt.Errorf("the queue is nil")
+var queueEmptyError = fmt.Errorf("the queue is empty")
+
 type SemiGenericQueue[T fmt.Stringer] struct {
 	sdlist *sdlistlib.SemiGenericList[T]
 }
