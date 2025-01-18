@@ -3,6 +3,7 @@ package sgquezlib
 import (
 	"errors"
 	"fmt"
+
 	"github.com/pluckynumbat/linked-list-stuff-go/sdlistlib"
 
 	"testing"
@@ -115,7 +116,7 @@ func TestIsEmpty(t *testing.T) {
 	}
 }
 
-func TestPeek1(t *testing.T) {
+func TestPeek(t *testing.T) {
 	var q1, q2, q3, q4 *SemiGenericQueue[*prInt]
 
 	q2 = &SemiGenericQueue[*prInt]{}
@@ -131,7 +132,7 @@ func TestPeek1(t *testing.T) {
 	}
 	q4 = &SemiGenericQueue[*prInt]{l2}
 
-	var tests = []struct {
+	var tests1 = []struct {
 		name     string
 		queue    *SemiGenericQueue[*prInt]
 		wantVal  *prInt
@@ -143,7 +144,7 @@ func TestPeek1(t *testing.T) {
 		{"non-empty queue", q4, &pr1, nil},
 	}
 
-	for _, test := range tests {
+	for _, test := range tests1 {
 		t.Run(test.name, func(t *testing.T) {
 			gotVal, gotErr := test.queue.Peek()
 			if !errors.Is(gotErr, test.expError) {
@@ -155,9 +156,7 @@ func TestPeek1(t *testing.T) {
 			}
 		})
 	}
-}
 
-func TestPeekQueueTillEmpty(t *testing.T) {
 	l := &sdlistlib.SemiGenericList[prString]{}
 	prStrs := []prString{"a", "b", "c"}
 
@@ -170,7 +169,7 @@ func TestPeekQueueTillEmpty(t *testing.T) {
 
 	q := &SemiGenericQueue[prString]{l}
 
-	var tests = []struct {
+	var tests2 = []struct {
 		name    string
 		wantVal prString
 	}{
@@ -179,7 +178,7 @@ func TestPeekQueueTillEmpty(t *testing.T) {
 		{"1 element queue", "c"},
 	}
 
-	for _, test := range tests {
+	for _, test := range tests2 {
 		t.Run(test.name, func(t *testing.T) {
 			gotVal, err := q.Peek()
 			if err != nil {
