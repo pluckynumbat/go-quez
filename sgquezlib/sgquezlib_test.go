@@ -1,6 +1,7 @@
 package sgquezlib
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pluckynumbat/linked-list-stuff-go/sdlistlib"
 
