@@ -113,3 +113,46 @@ func TestIsEmpty(t *testing.T) {
 		})
 	}
 }
+
+func TestPeek1(t *testing.T) {
+	var q1, q2, q3, q4 *SemiGenericQueue[*prInt]
+
+	q2 = &SemiGenericQueue[*prInt]{}
+
+	l1 := &sdlistlib.SemiGenericList[*prInt]{}
+	q3 = &SemiGenericQueue[*prInt]{l1}
+
+	l2 := &sdlistlib.SemiGenericList[*prInt]{}
+	var pr1 prInt
+	addErr := l2.AddAtBeginning(&pr1)
+	if addErr != nil {
+		t.Fatalf("list add failed with error: %v", addErr)
+	}
+	q4 = &SemiGenericQueue[*prInt]{l2}
+
+	var tests = []struct {
+		name     string
+		queue    *SemiGenericQueue[*prInt]
+		wantVal  *prInt
+		expError error
+	}{
+		{"nil queue", q1, nil, queueNilError},
+		{"non-nil queue, nil list", q2, nil, queueEmptyError},
+		{"empty queue", q3, nil, queueEmptyError},
+		{"non-empty queue", q4, &pr1, nil},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			gotVal, gotErr := test.queue.Peek()
+			if !errors.Is(gotErr, test.expError) {
+				t.Errorf("Unexpected error for Peek(), want: %v, got : %v", test.expError, gotErr)
+			} else if gotErr != nil {
+				fmt.Println(gotErr)
+			} else if gotVal != test.wantVal {
+				t.Errorf("Incorrect result for Peek(), want: %v, got : %v", test.wantVal, gotVal)
+			}
+		})
+	}
+}
+
