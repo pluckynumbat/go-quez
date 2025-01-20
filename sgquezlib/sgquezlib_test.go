@@ -194,3 +194,16 @@ func TestPeek(t *testing.T) {
 		})
 	}
 }
+
+func TestEnqueueNilQueue(t *testing.T) {
+	var q *SemiGenericQueue[*prString]
+	var s prString = "a"
+	err := q.Enqueue(&s)
+
+	if err == nil {
+		t.Errorf("Enqueue() on a nil queue should have returned an error")
+	} else {
+		fmt.Println(err)
+	}
+}
+
