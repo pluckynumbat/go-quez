@@ -195,88 +195,95 @@ func TestPeek(t *testing.T) {
 	}
 }
 
-func TestEnqueueNilQueue(t *testing.T) {
-	var q1 *SemiGenericQueue[*prString]
-	var s prString = "a"
-	err1 := q1.Enqueue(&s)
+func TestEnqueue(t *testing.T) {
 
-	if err1 == nil {
-		t.Errorf("Enqueue() on a nil queue should have returned an error")
-	} else {
-		fmt.Println(err1)
-	}
+	t.Run("nil queue of prString pointers", func(t *testing.T) {
+		var q *SemiGenericQueue[*prString]
+		var s prString = "a"
+		err := q.Enqueue(&s)
 
-	var q2 *SemiGenericQueue[prInt]
-	var i prInt = 1
-	err2 := q2.Enqueue(i)
+		if err == nil {
+			t.Errorf("Enqueue() on a nil queue should have returned an error")
+		} else {
+			fmt.Println(err)
+		}
+	})
 
-	if err2 == nil {
-		t.Errorf("Enqueue() on a nil queue should have returned an error")
-	} else {
-		fmt.Println(err2)
-	}
-}
+	t.Run("non nil queue of prString pointers", func(t *testing.T) {
+		q := &SemiGenericQueue[*prString]{}
 
-func TestEnqueueNonNilQueue(t *testing.T) {
-	q1 := &SemiGenericQueue[*prString]{}
+		var tests = []struct {
+			name string
+			val  prString
+		}{
+			{"1 element queue", "a"},
+			{"2 element queue", "b"},
+			{"3 element queue", "c"},
+		}
 
-	var tests1 = []struct {
-		name string
-		val  prString
-	}{
-		{"1 element queue", "a"},
-		{"2 element queue", "b"},
-		{"3 element queue", "c"},
-	}
-
-	for _, test := range tests1 {
-		t.Run(test.name, func(t *testing.T) {
-			err := q1.Enqueue(&test.val)
-			if err != nil {
-				t.Errorf("Enqueue() failed with error: %v", err)
-			} else {
-				val, pErr := q1.Peek()
-				if pErr != nil {
-					t.Errorf("Peek() failed with error: %v", pErr)
+		for _, test := range tests {
+			t.Run(test.name, func(t *testing.T) {
+				err := q.Enqueue(&test.val)
+				if err != nil {
+					t.Errorf("Enqueue() failed with error: %v", err)
 				} else {
-					var want prString = "a"
-					got := *val
-					if got != want {
-						t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+					val, pErr := q.Peek()
+					if pErr != nil {
+						t.Errorf("Peek() failed with error: %v", pErr)
+					} else {
+						var want prString = "a"
+						got := *val
+						if got != want {
+							t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+						}
 					}
 				}
-			}
-		})
-	}
+			})
+		}
+	})
 
-	q2 := &SemiGenericQueue[prInt]{}
+	t.Run("nil queue of prInt values", func(t *testing.T) {
+		var q *SemiGenericQueue[prInt]
+		var i prInt = 1
+		err := q.Enqueue(i)
 
-	var tests2 = []struct {
-		name string
-		val  prInt
-	}{
-		{"1 element queue", 1},
-		{"2 element queue", 2},
-		{"3 element queue", 3},
-	}
+		if err == nil {
+			t.Errorf("Enqueue() on a nil queue should have returned an error")
+		} else {
+			fmt.Println(err)
+		}
+	})
 
-	for _, test := range tests2 {
-		t.Run(test.name, func(t *testing.T) {
-			err := q2.Enqueue(test.val)
-			if err != nil {
-				t.Errorf("Enqueue() failed with error: %v", err)
-			} else {
-				val, pErr := q2.Peek()
-				if pErr != nil {
-					t.Errorf("Peek() failed with error: %v", pErr)
+	t.Run("non nil queue of prInt values", func(t *testing.T) {
+		q := &SemiGenericQueue[prInt]{}
+
+		var tests = []struct {
+			name string
+			val  prInt
+		}{
+			{"1 element queue", 1},
+			{"2 element queue", 2},
+			{"3 element queue", 3},
+		}
+
+		for _, test := range tests {
+			t.Run(test.name, func(t *testing.T) {
+				err := q.Enqueue(test.val)
+				if err != nil {
+					t.Errorf("Enqueue() failed with error: %v", err)
 				} else {
-					var want prInt = 1
-					got := val
-					if got != want {
-						t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+					val, pErr := q.Peek()
+					if pErr != nil {
+						t.Errorf("Peek() failed with error: %v", pErr)
+					} else {
+						var want prInt = 1
+						got := val
+						if got != want {
+							t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+						}
 					}
 				}
-			}
-		})
-	}
+			})
+		}
+	})
 }
