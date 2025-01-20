@@ -47,3 +47,20 @@ func (queue *SemiGenericQueue[T]) Peek() (T, error) {
 	return data, nil
 }
 
+// Enqueue adds an element to the back of the queue
+func (queue *SemiGenericQueue[T]) Enqueue(val T) error {
+	if queue.IsNil() {
+		return queueNilError
+	}
+
+	if queue.isListNil() {
+		queue.sdlist = &sdlistlib.SemiGenericList[T]{}
+	}
+
+	err := queue.sdlist.AddAtEnd(val)
+	if err != nil {
+		return fmt.Errorf("queue Enqueue() failed with error %v", err)
+	}
+	return nil
+}
+
