@@ -207,3 +207,35 @@ func TestEnqueueNilQueue(t *testing.T) {
 	}
 }
 
+func TestEnqueueNonNilQueue(t *testing.T) {
+	q := &SemiGenericQueue[*prString]{}
+
+	var tests = []struct {
+		name string
+		val  prString
+	}{
+		{"1 element queue", "a"},
+		{"2 element queue", "b"},
+		{"3 element queue", "c"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := q.Enqueue(&test.val)
+			if err != nil {
+				t.Errorf("Enqueue() failed with error: %v", err)
+			} else {
+				val, pErr := q.Peek()
+				if pErr != nil {
+					t.Errorf("Peek() failed with error: %v", pErr)
+				} else {
+					var want prString = "a"
+					got := *val
+					if got != want {
+						t.Errorf("Peek() gave incorrect results, want: %v, got: %v", want, got)
+					}
+				}
+			}
+		})
+	}
+}
