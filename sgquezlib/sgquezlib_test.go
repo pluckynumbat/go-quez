@@ -289,44 +289,99 @@ func TestEnqueue(t *testing.T) {
 }
 
 func TestDequeueNilEmptyQueue(t *testing.T) {
-	var q1, q2, q3, q4 *SemiGenericQueue[prString]
 
-	q2 = &SemiGenericQueue[prString]{}
+	t.Run("nil / empty queue of prStrings", func(t *testing.T) {
+		var q1, q2, q3, q4 *SemiGenericQueue[prString]
 
-	l1 := &sdlistlib.SemiGenericList[prString]{}
-	q3 = &SemiGenericQueue[prString]{l1}
+		q2 = &SemiGenericQueue[prString]{}
 
-	l2 := &sdlistlib.SemiGenericList[prString]{}
-	addErr := l2.AddAtEnd("a")
-	if addErr != nil {
-		t.Fatalf("Error while adding to a semi generic list: %v", addErr)
-	}
-	q4 = &SemiGenericQueue[prString]{l2}
+		l1 := &sdlistlib.SemiGenericList[prString]{}
+		q3 = &SemiGenericQueue[prString]{l1}
 
-	var tests = []struct {
-		name     string
-		queue    *SemiGenericQueue[prString]
-		expPeek  prString
-		expError error
-	}{
-		{"nil queue", q1, "", queueNilError},
-		{"non-nil queue, nil list", q2, "", queueEmptyError},
-		{"empty queue", q3, "", queueEmptyError},
-		{"non-empty queue ", q4, "a", nil},
-	}
+		l2 := &sdlistlib.SemiGenericList[prString]{}
+		addErr := l2.AddAtEnd("a")
+		if addErr != nil {
+			t.Fatalf("Error while adding to a semi generic list: %v", addErr)
+		}
+		q4 = &SemiGenericQueue[prString]{l2}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			val, err := test.queue.Dequeue()
-			if !errors.Is(err, test.expError) {
-				t.Errorf("Dequeue() failed with unexpected error: %v", err)
-			} else if err != nil {
-				fmt.Println(err)
-			} else {
-				want := test.expPeek
-				got := val
-				if got != want {
-					t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", want, got)
+		var tests = []struct {
+			name     string
+			queue    *SemiGenericQueue[prString]
+			expPeek  prString
+			expError error
+		}{
+			{"nil queue", q1, "", queueNilError},
+			{"non-nil queue, nil list", q2, "", queueEmptyError},
+			{"empty queue", q3, "", queueEmptyError},
+			{"non-empty queue ", q4, "a", nil},
+		}
+
+		for _, test := range tests {
+			t.Run(test.name, func(t *testing.T) {
+				val, err := test.queue.Dequeue()
+				if !errors.Is(err, test.expError) {
+					t.Errorf("Dequeue() failed with unexpected error: %v", err)
+				} else if err != nil {
+					fmt.Println(err)
+				} else {
+					want := test.expPeek
+					got := val
+					if got != want {
+						t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", want, got)
+					}
+				}
+			})
+		}
+	})
+
+	t.Run("nil / empty queue of pointers to prInts", func(t *testing.T) {
+		var q1, q2, q3, q4 *SemiGenericQueue[*prInt]
+
+		q2 = &SemiGenericQueue[*prInt]{}
+
+		l1 := &sdlistlib.SemiGenericList[*prInt]{}
+		q3 = &SemiGenericQueue[*prInt]{l1}
+
+		l2 := &sdlistlib.SemiGenericList[*prInt]{}
+		var pr prInt = 1
+		addErr := l2.AddAtEnd(&pr)
+		if addErr != nil {
+			t.Fatalf("Error while adding to a semi generic list: %v", addErr)
+		}
+		q4 = &SemiGenericQueue[*prInt]{l2}
+
+		var tests = []struct {
+			name     string
+			queue    *SemiGenericQueue[*prInt]
+			expPeek  *prInt
+			expError error
+		}{
+			{"nil queue", q1, nil, queueNilError},
+			{"non-nil queue, nil list", q2, nil, queueEmptyError},
+			{"empty queue", q3, nil, queueEmptyError},
+			{"non-empty queue ", q4, &pr, nil},
+		}
+
+		for _, test := range tests {
+			t.Run(test.name, func(t *testing.T) {
+				val, err := test.queue.Dequeue()
+				if !errors.Is(err, test.expError) {
+					t.Errorf("Dequeue() failed with unexpected error: %v", err)
+				} else if err != nil {
+					fmt.Println(err)
+				} else {
+					want := test.expPeek
+					got := val
+					if got != want {
+						t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", want, got)
+					}
+				}
+			})
+		}
+	})
+}
+
 				}
 			}
 		})
