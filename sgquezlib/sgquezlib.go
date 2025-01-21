@@ -64,3 +64,25 @@ func (queue *SemiGenericQueue[T]) Enqueue(val T) error {
 	return nil
 }
 
+// Dequeue removes and returns the element at the front of the queue
+func (queue *SemiGenericQueue[T]) Dequeue() (T, error) {
+	if queue.IsNil() {
+		return *new(T), queueNilError
+	}
+
+	if queue.IsEmpty() {
+		return *new(T), queueEmptyError
+	}
+
+	node, err := queue.sdlist.RemoveFirst()
+	if err != nil {
+		return *new(T), fmt.Errorf("queue Dequeue() failed with error %v", err)
+	}
+
+	data, err2 := node.GetData()
+	if err2 != nil {
+		return *new(T), fmt.Errorf("queue Dequeue() failed with error %v", err)
+	}
+
+	return data, nil
+}
