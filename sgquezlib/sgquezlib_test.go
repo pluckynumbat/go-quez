@@ -388,3 +388,52 @@ func TestDequeueNilEmptyQueue(t *testing.T) {
 	}
 }
 
+func TestDequeueTillQueueEmpty(t *testing.T) {
+	q := &SemiGenericQueue[prInt]{}
+
+	prInts := []prInt{1, 2, 3}
+
+	for _, val := range prInts {
+		addArr := q.Enqueue(val)
+		if addArr != nil {
+			t.Fatalf("Enqueue() failed with error: %v", addArr)
+		}
+	}
+
+	var tests = []struct {
+		name       string
+		expVal     prInt
+		newPeek    prInt
+		expPeekErr error
+	}{
+		{"3 element queue", 1, 2, nil},
+		{"2 element queue", 2, 3, nil},
+		{"1 element queue", 3, 0, queueEmptyError},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			val, err := q.Dequeue()
+			if err != nil {
+				t.Errorf("Dequeue() failed with error: %v", err)
+			} else {
+				if val != test.expVal {
+					t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", test.expVal, val)
+				}
+
+				val2, err2 := q.Peek()
+				if !errors.Is(err2, test.expPeekErr) {
+					t.Errorf("Peek() failed with unexpected error: %v", err2)
+				} else if err2 != nil {
+					fmt.Println(err2)
+				} else {
+					want := test.newPeek
+					got := val2
+					if got != want {
+						t.Errorf("Peek() returned incorrect results, want: %v, got: %v", want, got)
+					}
+				}
+			}
+		})
+	}
+}
