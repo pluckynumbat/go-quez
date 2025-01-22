@@ -546,5 +546,25 @@ func TestQueueOperations(t *testing.T) {
 				}
 			}
 		}
+
+		stateTests := []struct {
+			name   string
+			fnName string
+			fn     func() bool
+			want   bool
+		}{
+			{"is queue nil", "IsNil()", q.IsNil, false},
+			{"is list nil", "isListNil()", q.isListNil, false},
+			{"is queue empty", "IsEmpty()", q.IsEmpty, true},
+		}
+
+		for _, test := range stateTests {
+			t.Run(test.name, func(t *testing.T) {
+				got := test.fn()
+				if got != test.want {
+					t.Errorf("Incorrect result for %v, want: %v, got : %v", test.fnName, test.want, got)
+				}
+			})
+		}
 	})
 }
