@@ -582,77 +582,87 @@ func TestQueueOperations(t *testing.T) {
 
 		q := &SemiGenericQueue[prString]{}
 
-		enqueueTests := []struct {
-			name       string
-			enqueueVal prString
-			expFront   prString
-		}{
-			{"enqueue a", "a", "a"},
-			{"enqueue b", "b", "a"},
-			{"enqueue c", "c", "a"},
-		}
-
-		for _, test := range enqueueTests {
-			err := q.Enqueue(test.enqueueVal)
-			if err != nil {
-				t.Errorf("Enqueue() encountered an unexpected error: %v", err)
-			} else {
-				frontVal, err2 := q.Peek()
-				if err2 != nil {
-					t.Errorf("Peek() encountered an unexpected error: %v", err2)
-				} else if frontVal != test.expFront {
-					t.Errorf("Peek() returned incorrect results, want: %v, got: %v", test.expFront, frontVal)
-				}
+		t.Run("enqueue tests", func(t *testing.T) {
+			enqueueTests := []struct {
+				name       string
+				enqueueVal prString
+				expFront   prString
+			}{
+				{"enqueue a", "a", "a"},
+				{"enqueue b", "b", "a"},
+				{"enqueue c", "c", "a"},
 			}
-		}
 
-		dequeueTests := []struct {
-			name       string
-			expVal     prString
-			newPeek    prString
-			expPeekErr error
-		}{
-			{"dequeue a", "a", "b", nil},
-			{"dequeue b", "b", "c", nil},
-			{"dequeue c", "c", "", queueEmptyError},
-		}
-
-		for _, test := range dequeueTests {
-			val, err := q.Dequeue()
-			if err != nil {
-				t.Errorf("Dequeue() encountered an unexpected error: %v", err)
-			} else if val != test.expVal {
-				t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", test.expVal, val)
-			} else {
-				frontVal, err2 := q.Peek()
-				if !errors.Is(err2, test.expPeekErr) {
-					t.Errorf("Peek() encountered an unexpected error: %v", err2)
-				} else if err2 != nil {
-					fmt.Println(err2)
-				} else if frontVal != test.newPeek {
-					t.Errorf("Peek() returned incorrect results, want: %v, got: %v", test.newPeek, frontVal)
-				}
+			for _, test := range enqueueTests {
+				t.Run(test.name, func(t *testing.T) {
+					err := q.Enqueue(test.enqueueVal)
+					if err != nil {
+						t.Errorf("Enqueue() encountered an unexpected error: %v", err)
+					} else {
+						frontVal, err2 := q.Peek()
+						if err2 != nil {
+							t.Errorf("Peek() encountered an unexpected error: %v", err2)
+						} else if frontVal != test.expFront {
+							t.Errorf("Peek() returned incorrect results, want: %v, got: %v", test.expFront, frontVal)
+						}
+					}
+				})
 			}
-		}
+		})
 
-		stateTests := []struct {
-			name   string
-			fnName string
-			fn     func() bool
-			want   bool
-		}{
-			{"is queue nil", "IsNil()", q.IsNil, false},
-			{"is list nil", "isListNil()", q.isListNil, false},
-			{"is queue empty", "IsEmpty()", q.IsEmpty, true},
-		}
+		t.Run("dequeue tests", func(t *testing.T) {
+			dequeueTests := []struct {
+				name       string
+				expVal     prString
+				newPeek    prString
+				expPeekErr error
+			}{
+				{"dequeue a", "a", "b", nil},
+				{"dequeue b", "b", "c", nil},
+				{"dequeue c", "c", "", queueEmptyError},
+			}
 
-		for _, test := range stateTests {
-			t.Run(test.name, func(t *testing.T) {
-				got := test.fn()
-				if got != test.want {
-					t.Errorf("Incorrect result for %v, want: %v, got : %v", test.fnName, test.want, got)
-				}
-			})
-		}
+			for _, test := range dequeueTests {
+				t.Run(test.name, func(t *testing.T) {
+					val, err := q.Dequeue()
+					if err != nil {
+						t.Errorf("Dequeue() encountered an unexpected error: %v", err)
+					} else if val != test.expVal {
+						t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", test.expVal, val)
+					} else {
+						frontVal, err2 := q.Peek()
+						if !errors.Is(err2, test.expPeekErr) {
+							t.Errorf("Peek() encountered an unexpected error: %v", err2)
+						} else if err2 != nil {
+							fmt.Println(err2)
+						} else if frontVal != test.newPeek {
+							t.Errorf("Peek() returned incorrect results, want: %v, got: %v", test.newPeek, frontVal)
+						}
+					}
+				})
+			}
+		})
+
+		t.Run("state tests", func(t *testing.T) {
+			stateTests := []struct {
+				name   string
+				fnName string
+				fn     func() bool
+				want   bool
+			}{
+				{"is queue nil", "IsNil()", q.IsNil, false},
+				{"is list nil", "isListNil()", q.isListNil, false},
+				{"is queue empty", "IsEmpty()", q.IsEmpty, true},
+			}
+
+			for _, test := range stateTests {
+				t.Run(test.name, func(t *testing.T) {
+					got := test.fn()
+					if got != test.want {
+						t.Errorf("Incorrect result for %v, want: %v, got : %v", test.fnName, test.want, got)
+					}
+				})
+			}
+		})
 	})
 }
