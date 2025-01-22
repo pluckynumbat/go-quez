@@ -517,5 +517,34 @@ func TestQueueOperations(t *testing.T) {
 				}
 			}
 		}
+
+		dequeueTests := []struct {
+			name       string
+			expVal     *prInt
+			newPeek    *prInt
+			expPeekErr error
+		}{
+			{"dequeue 1", &pr1, &pr2, nil},
+			{"dequeue 2", &pr2, &pr3, nil},
+			{"dequeue 3", &pr3, nil, queueEmptyError},
+		}
+
+		for _, test := range dequeueTests {
+			val, err := q.Dequeue()
+			if err != nil {
+				t.Errorf("Dequeue() encountered an unexpected error: %v", err)
+			} else if val != test.expVal {
+				t.Errorf("Dequeue() returned incorrect results, want: %v, got: %v", test.expVal, val)
+			} else {
+				frontVal, err2 := q.Peek()
+				if !errors.Is(err2, test.expPeekErr) {
+					t.Errorf("Peek() encountered an unexpected error: %v", err2)
+				} else if err2 != nil {
+					fmt.Println(err2)
+				} else if frontVal != test.newPeek {
+					t.Errorf("Peek() returned incorrect results, want: %v, got: %v", test.newPeek, frontVal)
+				}
+			}
+		}
 	})
 }
