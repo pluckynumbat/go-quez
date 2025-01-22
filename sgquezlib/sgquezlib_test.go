@@ -567,4 +567,33 @@ func TestQueueOperations(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("queue of prStrings", func(t *testing.T) {
+
+		q := &SemiGenericQueue[prString]{}
+
+		enqueueTests := []struct {
+			name       string
+			enqueueVal prString
+			expFront   prString
+		}{
+			{"enqueue a", "a", "a"},
+			{"enqueue b", "b", "a"},
+			{"enqueue c", "c", "a"},
+		}
+
+		for _, test := range enqueueTests {
+			err := q.Enqueue(test.enqueueVal)
+			if err != nil {
+				t.Errorf("Enqueue() encountered an unexpected error: %v", err)
+			} else {
+				frontVal, err2 := q.Peek()
+				if err2 != nil {
+					t.Errorf("Peek() encountered an unexpected error: %v", err2)
+				} else if frontVal != test.expFront {
+					t.Errorf("Peek() returned incorrect results, want: %v, got: %v", test.expFront, frontVal)
+				}
+			}
+		}
+	})
 }
